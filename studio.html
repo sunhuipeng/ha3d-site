@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HA 3D Plugin Studio · 图形化插件开发台</title>
+  <meta name="description"
+    content="HA 3D Home 官方配套的图形化插件开发台：浏览器里装配 GLB 模型、绑定实体、实时预览；内置 MCP Server 26 个工具，AI 助手全流程读写与验证，从一句话需求到可安装的插件压缩包。"
+   >
+  <meta name="theme-color" content="#f7fafd">
+  <meta name="color-scheme" content="light">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%A9%3C/text%3E%3C/svg%3E"
+   >
+  <link rel="stylesheet" href="css/style.css?v=20261128">
+  <style id="__dm_no_drag_style__">
+    * {
+      -webkit-user-drag: none !important;
+    }
+  </style>
+  <style id="__dm_bindable_badge_style__">
+    [data-sp-bindable="database"] {
+      outline: 1px dashed #0088ff;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    [data-sp-bindable="database"] * {
+      pointer-events: none !important;
+      transition: none !important;
+      animation: none !important;
+    }
+
+    [data-sp-bindable="database"] {
+      transition: none !important;
+      animation: none !important;
+    }
+  </style>
+</head>
+
+<body style="">
+  <a class="skip" href="#main">跳到主要内容</a>
+  <div class="grain"></div>
+  <div class="wrap">
+
+    <!-- ================= 导航 ================= -->
+    <nav class="nav scrolled" id="nav">
+      <div class="nav-in">
+        <a class="brand" href="#top">
+          <span class="roof">🧩</span>
+          HA 3D Plugin Studio
+          <small>插件开发台</small>
+        </a>
+        <div class="nav-links">
+          <a href="#features" class="">核心能力</a>
+          <a href="#start" class="active" aria-current="true">快速开始</a>
+          <a href="#mcp" class="">MCP 工具</a>
+          <a href="#deploy" class="">部署</a>
+          <a href="index.html">← 返回 HA 3D Home</a>
+          <a href="https://gitee.com/sunhuip/ha3d-plugin-studio" target="_blank" rel="noopener" class="nav-gh"
+            aria-label="Gitee 源码仓库">Gitee</a>
+        </div>
+      </div>
+    </nav>
+
+    <main id="main">
+
+      <!-- ================= HERO ================= -->
+      <header class="hero" id="top">
+        <div class="hero-in">
+          <div class="hero-copy">
+            <div class="eyebrow rv">
+              <b>PLUGIN STUDIO</b>
+              <span class="pulse-dot"></span>
+              ha-3d-home 官方配套开发台
+              <em class="ew-tag">全程由 WorkBuddy 开发</em>
+            </div>
+            <h1 class="rv" style="--d:.06s">
+              造 3D 插件，<br><span class="grad"
+               >动动嘴就能搞定</span>
+            </h1>
+            <p class="lede rv" style="--d:.12s">
+              图形化的 <b>ha-3d-home</b> 插件开发台：在浏览器里创建插件项目、装配 GLB 模型、
+              实时预览。内置 <b>MCP Server（26 个工具）</b>，
+              WorkBuddy 这类 AI 助手可以全流程读写与验证——
+              <b>从一句话需求，到可安装的插件压缩包</b>。
+            </p>
+            <div class="cta-row rv" style="--d:.18s">
+              <a class="btn primary" href="#start">快速开始 <span class="ar"
+                 >→</span></a>
+
+              <a class="btn" href="https://gitee.com/sunhuip/ha3d-plugin-studio" target="_blank" rel="noopener"
+               >
+                Gitee 源码
+              </a>
+            </div>
+            <div class="stats rv" style="--d:.27s">
+              <div class="stat"><b data-count="26"
+                 >26</b><span>个
+                  MCP 工具</span></div>
+              <div class="stat"><b data-count="3"
+                 >3</b><span
+                 >类插件</span></div>
+              <div class="stat"><b data-count="0"
+                 >0</b><span
+                 >代码</span></div>
+              <div class="stat"><b data-count="1"
+                 >1</b><span
+                 >件部署</span></div>
+            </div>
+          </div>
+
+          <div class="hero-art rv" style="--d:.1s">
+            <ul class="hero-points stagger rv" style="--d:.16s">
+              <li><span class="pt-ic"
+                 >🖱️</span><span
+                 ><b>图形化装配</b>建项目
+                  · 传模型 · 写提示词</span></li>
+              <li><span class="pt-ic"
+                 >🤖</span><span
+                 ><b>AI
+                    全程协作</b>MCP 接入，写完插件自己核验效果</span></li>
+              <li><span class="pt-ic"
+                 >📦</span><span
+                 ><b>一键交付</b>导出
+                  zip 或直接发布，版本号自动写回</span></li>
+            </ul>
+            <div class="ai-scene">
+              <div class="browser-frame rv" style="--d:.2s">
+                <div class="bf-bar">
+                  <span class="bf-dots"><i
+                     ></i><i
+                     ></i><i
+                     ></i></span>
+                  <span class="bf-url">
+                    <svg viewBox="0 0 12 12" width="9" height="9" aria-hidden="true"
+                     >
+                      <rect x="2" y="5" width="8" height="6" rx="1.4" fill="currentColor"
+                       ></rect>
+                      <path d="M4 5V3.6a2 2 0 1 1 4 0V5" fill="none" stroke="currentColor" stroke-width="1.4"
+                       ></path>
+                    </svg>
+                    plugin-studio · localhost:8098
+                  </span>
+                  <span class="bf-act">⋯</span>
+                </div>
+                <div class="bf-body">
+                  <div class="bf-canvas">
+                    <span class="bf-side"><i
+                       ></i><i
+                       ></i><i
+                       ></i></span>
+                    <span class="bf-stage"><b
+                       ></b><b
+                       ></b><b
+                       ></b></span>
+                  </div>
+                </div>
+              </div>
+
+              <svg class="flow-svg" viewBox="0 0 640 520" preserveAspectRatio="none" aria-hidden="true"
+               >
+                <defs>
+                  <path id="fpA" d="M545 415 C 430 320, 290 230, 165 130" fill="none"
+                   ></path>
+                  <path id="fpB" d="M150 175 C 300 270, 430 350, 570 435" fill="none"
+                   ></path>
+                </defs>
+                <use href="#fpA" class="flow-line"></use>
+                <use href="#fpB" class="flow-line flow-line-r"></use>
+                <circle class="flow-pkt" r="5">
+                  <animateMotion dur="3s" repeatCount="indefinite">
+                    <mpath href="#fpA"></mpath>
+                  </animateMotion>
+                </circle>
+                <circle class="flow-pkt pkt-dim" r="3.5">
+                  <animateMotion dur="3s" begin="1.5s" repeatCount="indefinite"
+                   >
+                    <mpath href="#fpA"></mpath>
+                  </animateMotion>
+                </circle>
+                <circle class="flow-pkt ok" r="5">
+                  <animateMotion dur="3s" begin=".8s" repeatCount="indefinite"
+                   >
+                    <mpath href="#fpB"></mpath>
+                  </animateMotion>
+                </circle>
+                <circle class="flow-pkt ok pkt-dim" r="3.5">
+                  <animateMotion dur="3s" begin="2.3s" repeatCount="indefinite"
+                   >
+                    <mpath href="#fpB"></mpath>
+                  </animateMotion>
+                </circle>
+              </svg>
+
+              <svg class="bot-fig" viewBox="0 0 150 162" aria-hidden="true">
+                <defs>
+                  <linearGradient id="bgShell" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#f7fafd"></stop>
+                    <stop offset="1" stop-color="#c7d3e6"></stop>
+                  </linearGradient>
+                  <linearGradient id="bgVisor" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#232c40"></stop>
+                    <stop offset="1" stop-color="#101726"></stop>
+                  </linearGradient>
+                  <linearGradient id="bgAcc" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#2f7fe4"></stop>
+                    <stop offset="1" stop-color="#6fb0ff"></stop>
+                  </linearGradient>
+                </defs>
+                <ellipse cx="75" cy="154" rx="46" ry="7" fill="rgba(23,42,74,.14)"
+                 ></ellipse>
+                <line x1="75" y1="12" x2="75" y2="26" stroke="#9fb2cc" stroke-width="3"
+                 ></line>
+                <circle class="bot-ant" cx="75" cy="9" r="5" fill="url(#bgAcc)"
+                 ></circle>
+                <rect x="25" y="24" width="100" height="62" rx="24" fill="url(#bgShell)" stroke="#aebfd8"
+                  stroke-width="1.5"></rect>
+                <rect x="39" y="36" width="72" height="36" rx="17" fill="url(#bgVisor)"
+                 ></rect>
+                <circle class="bot-eye" cx="58" cy="54" r="5" fill="#57e0ff">
+                </circle>
+                <circle class="bot-eye" cx="88" cy="54" r="5" fill="#57e0ff">
+                </circle>
+                <rect x="12" y="44" width="12" height="22" rx="6" fill="#d6e0ee" stroke="#b3c4dc"
+                 ></rect>
+                <rect x="126" y="44" width="12" height="22" rx="6" fill="#d6e0ee" stroke="#b3c4dc"
+                 ></rect>
+                <rect x="38" y="92" width="74" height="48" rx="18" fill="url(#bgShell)" stroke="#aebfd8"
+                  stroke-width="1.5"></rect>
+                <rect x="52" y="104" width="46" height="12" rx="6" fill="url(#bgAcc)" opacity=".9"
+                 ></rect>
+                <circle cx="58" cy="130" r="3" fill="#8fa5c4"></circle>
+                <circle cx="70" cy="130" r="3" fill="#8fa5c4"></circle>
+                <circle cx="82" cy="130" r="3" fill="#8fa5c4"></circle>
+                <rect x="18" y="98" width="16" height="30" rx="8" fill="#dbe4f1" stroke="#b3c4dc"
+                 ></rect>
+                <rect x="116" y="98" width="16" height="30" rx="8" fill="#dbe4f1" stroke="#b3c4dc"
+                 ></rect>
+              </svg>
+
+              <div class="mcp-chip mc-call" aria-hidden="true"><span
+                  class="mc-pill"><i
+                   ></i><b class="mc-msg"
+                   >studio_write_plugin()</b></span></div>
+              <div class="mcp-chip mc-ack" aria-hidden="true"><span
+                  class="mc-pill"><i
+                   ></i><b class="mc-msg"
+                   >✓ plugin.js 已生成</b></span></div>
+
+              <svg class="person-fig" viewBox="0 0 96 122" aria-hidden="true"
+               >
+                <defs>
+                  <linearGradient id="pfShirt" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#ffb454"></stop>
+                    <stop offset="1" stop-color="#ef8c1d"></stop>
+                  </linearGradient>
+                </defs>
+                <ellipse cx="44" cy="116" rx="26" ry="5" fill="rgba(23,42,74,.14)"
+                 ></ellipse>
+                <rect x="32" y="88" width="11" height="24" rx="5" fill="#31415f"
+                 ></rect>
+                <rect x="47" y="88" width="11" height="24" rx="5" fill="#31415f"
+                 ></rect>
+                <rect x="27" y="52" width="36" height="42" rx="16" fill="url(#pfShirt)"
+                 ></rect>
+                <rect x="19" y="58" width="11" height="27" rx="5" fill="url(#pfShirt)"
+                 ></rect>
+                <g class="pf-arm">
+                  <rect x="60" y="42" width="11" height="28" rx="5" fill="url(#pfShirt)"
+                   ></rect>
+                </g>
+                <circle cx="44" cy="30" r="18" fill="#ffd9b8"></circle>
+                <path d="M26 28 a18 18 0 0 1 36 0 l0 -4 a18 14 0 0 0 -36 0 z" fill="#5a4632"
+                 ></path>
+                <path d="M26 26 q6 -14 18 -14 q13 0 18 14 q-8 -7 -18 -7 q-11 0 -18 7z" fill="#5a4632"
+                 ></path>
+                <circle cx="38" cy="32" r="2.2" fill="#2c3a55"></circle>
+                <circle cx="50" cy="32" r="2.2" fill="#2c3a55"></circle>
+                <path d="M39 39 q5 4 10 0" fill="none" stroke="#c96f4a" stroke-width="1.8" stroke-linecap="round"
+                 ></path>
+                <circle class="pf-cheek" cx="33" cy="37" r="2.6" fill="#ffb8a0" opacity=".8"
+                 ></circle>
+                <circle class="pf-cheek" cx="55" cy="37" r="2.6" fill="#ffb8a0" opacity=".8"
+                 ></circle>
+              </svg>
+
+              <div class="pf-bubble" aria-hidden="true"><b class="pf-msg"
+                 >调光要顺滑一点哦</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tech-strip rv" style="--d:.3s">
+          <span>技术栈</span>
+          <span class="dotline"></span>
+          <span>Express</span><span
+           >Vue 3</span><span
+           >Three.js</span>
+          <span>MCP · SSE</span><span
+           >GLB 模型</span><span
+           >Node.js</span>
+        </div>
+      </header>
+
+      <!-- ================= 核心能力 ================= -->
+      <section id="features">
+        <div class="sec">
+          <!-- MCP 能力弹幕（从右向左，三行） -->
+          <div class="dm-band rv" aria-hidden="true">
+            <div class="dm-row">
+              <span class="dm-item dm-b"><i
+                 ></i><b
+                 >studio_get_project</b>一站式读取全部配置</span>
+              <span class="dm-item dm-g"><i
+                 ></i><b
+                 >studio_get_code</b>读自定义代码 · 唯一入口</span>
+              <span class="dm-item dm-g"><i
+                 ></i><b
+                 >studio_write_code</b>提交即语法体检</span>
+              <span class="dm-item dm-b"><i
+                 ></i><b
+                 >studio_snapshot</b>配置快照 · 发布前对账</span>
+              <span class="dm-item dm-o"><i
+                 ></i><b
+                 >studio_get_runtime</b>运行期体检 · 抓隐藏报错</span>
+              <span class="dm-item dm-b"><i
+                 ></i><b
+                 >studio_get_project</b>一站式读取全部配置</span>
+              <span class="dm-item dm-g"><i
+                 ></i><b
+                 >studio_get_code</b>读自定义代码 · 唯一入口</span>
+              <span class="dm-item dm-g"><i
+                 ></i><b
+                 >studio_write_code</b>提交即语法体检</span>
+              <span class="dm-item dm-b"><i
+                 ></i><b
+                 >studio_snapshot</b>配置快照 · 发布前对账</span>
+              <span class="dm-item dm-o"><i
+                 ></i><b
+                 >studio_get_runtime</b>运行期体检 · 抓隐藏报错</span>
+            </div>
+            <div class="dm-row dm-row2">
+              <span class="dm-item dm-o"><i
+                 ></i><b
+                 >studio_view</b>转模型移相机 · 先摆姿态</span>
+              <span class="dm-item dm-o"><i
+                 ></i><b
+                 >studio_screenshot</b>预设视角一键出图</span>
+              <span class="dm-item dm-o"><i
+                 ></i><b
+                 >studio_set_entity</b>推实体状态验证造型</span>
+              <span class="dm-item dm-g"><i
+                 ></i><b
+                 >studio_set_option</b>调参数 · 回读实际生效值</span>
+              <span class="dm-item dm-o"><i
+                 ></i><b
+                 >studio_set_style</b>切换样式 · 验证多造型</span>
+              <span class="dm-item dm-b"><i
+                 ></i><b
+                 >studio_click</b>模拟点击设备读状态</span>
+              <span class="dm-item dm-o"><i
+                 ></i><b
+                 >studio_view</b>转模型移相机 · 先摆姿态</span>
+              <span class="dm-item dm-o"><i
+                 ></i><b
+                 >studio_screenshot</b>预设视角一键出图</span>
+              <span class="dm-item dm-o"><i
+                 ></i><b
+                 >studio_set_entity</b>推实体状态验证造型</span>
+              <span class="dm-item dm-g"><i
+                 ></i><b
+                 >studio_set_option</b>调参数 · 回读实际生效值</span>
+              <span class="dm-item dm-o"><i
+                 ></i><b
+                 >studio_set_style</b>切换样式 · 验证多造型</span>
+              <span class="dm-item dm-b"><i
+                 ></i><b
+                 >studio_click</b>模拟点击设备读状态</span>
+            </div>
+            <div class="dm-row dm-row3">
+              <span class="dm-item dm-b"><i
+                 ></i><b
+                 >studio_upload_model</b>上传 GLB 到模型库</span>
+              <span class="dm-item dm-p"><i
+                 ></i><b
+                 >studio_split_model</b>按节点拆分部件</span>
+              <span class="dm-item dm-o"><i
+                 ></i><b
+                 >studio_fix_model_materials</b>修复 GLB 材质发黑</span>
+              <span class="dm-item dm-b"><i
+                 ></i><b
+                 >studio_single_window</b>多标签页收敛成一个</span>
+              <span class="dm-item dm-p"><i
+                 ></i><b
+                 >studio_export_project</b>导出插件压缩包</span>
+              <span class="dm-item dm-p"><i
+                 ></i><b
+                 >studio_publish_project</b>一键发布到 ha-3d-home</span>
+              <span class="dm-item dm-b"><i
+                 ></i><b
+                 >studio_upload_model</b>上传 GLB 到模型库</span>
+              <span class="dm-item dm-p"><i
+                 ></i><b
+                 >studio_split_model</b>按节点拆分部件</span>
+              <span class="dm-item dm-o"><i
+                 ></i><b
+                 >studio_fix_model_materials</b>修复 GLB 材质发黑</span>
+              <span class="dm-item dm-b"><i
+                 ></i><b
+                 >studio_single_window</b>多标签页收敛成一个</span>
+              <span class="dm-item dm-p"><i
+                 ></i><b
+                 >studio_export_project</b>导出插件压缩包</span>
+              <span class="dm-item dm-p"><i
+                 ></i><b
+                 >studio_publish_project</b>一键发布到 ha-3d-home</span>
+            </div>
+          </div>
+          <div class="sec-head rv">
+            <div class="kicker">核心能力</div>
+            <h2>从模型到插件，<em
+               >一条流水线跑完</em></h2>
+            <p class="sec-sub">编辑页所见即所得：改配置、换造型、调参数，前端实时重建渲染，不用来回刷新。</p>
+          </div>
+          <!-- 开发流程图：准备什么 → 简单配置 → 多轮对话 → 验收部署 -->
+          <div class="flow-map rv">
+            <div class="flow-col">
+              <div class="flow-head"><span class="fn"
+                 >01</span>准备什么</div>
+              <div class="flow-item"><b
+                 >参考图</b><span
+                 >一张截图或一句话描述外观就行</span></div>
+              <div class="flow-item"><b
+                 >GLB 模型</b><span
+                 >有现成模型就传进模型库</span></div>
+              <div class="flow-item"><b
+                 >什么都没准备</b><span
+                 >让 AI 用代码直接画一个</span></div>
+            </div>
+            <div class="flow-arr" aria-hidden="true">→</div>
+            <div class="flow-col">
+              <div class="flow-head"><span class="fn"
+                 >02</span>简单配置</div>
+              <div class="flow-item"><b
+                 >建项目选类型</b><span
+                 >设备 · 门窗 · 背景，三选一</span></div>
+              <div class="flow-item"><b
+                 >传模型 · 拆部件</b><span
+                 >按顶层节点自动拆成独立部件</span></div>
+              <div class="flow-item"><b
+                 >填一句需求</b><span
+                 >写进 aiPrompt，给 AI 当需求书</span></div>
+            </div>
+            <div class="flow-arr" aria-hidden="true">→</div>
+            <div class="flow-col">
+              <div class="flow-head"><span class="fn"
+                 >03</span>多轮对话</div>
+              <div class="flow-item"><b
+                 >发起对话</b><span
+                 >WorkBuddy 按技能流程生成代码</span></div>
+              <div class="flow-item"><b
+                 >纠正逻辑</b><span
+                 >「关门时缓一缓」，接着聊就改</span></div>
+              <div class="flow-item"><b
+                 >实时看效果</b><span
+                 >提交即语法体检，前端重建渲染</span></div>
+            </div>
+            <div class="flow-arr" aria-hidden="true">→</div>
+            <div class="flow-col">
+              <div class="flow-head"><span class="fn"
+                 >04</span>验收部署</div>
+              <div class="flow-item"><b
+                 >人工验收</b><span
+                 >摆姿态、调参数，预览里过目</span></div>
+              <div class="flow-item"><b
+                 >AI 自动验收</b><span
+                 >推实体状态 + 截图跑边界</span></div>
+              <div class="flow-item"><b
+                 >AI 自动部署</b><span
+                 >一键发布到 ha-3d-home，版本号自动升</span></div>
+            </div>
+          </div>
+          <div class="feat-grid">
+            <div class="feat rv" style="--d:.18s">
+              <div class="ic">🧰</div>
+              <h3>模型工具链</h3>
+              <p>上传 / 拆分 / 重命名 / 删除
+                GLB，返回结构摘要与代码引用检查；一键修复材质发黑（sRGB、metallic、roughness）。</p>
+            </div>
+
+            <div class="feat rv" style="--d:.12s">
+              <div class="ic">👁️</div>
+              <h3>视觉自检闭环</h3>
+              <p>摆相机、按预设视角截图、模拟点击设备、推实体状态、跑运行期体检——AI 能「看到」自己写的插件长什么样。</p>
+            </div>
+            <div class="feat rv" style="--d:.3s">
+              <div class="ic">🚀</div>
+              <h3>一键交付</h3>
+              <p>导出插件压缩包（zip），或直接发布到 ha-3d-home 远程安装、版本号自动写回——做好的插件立刻能在家里用。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 快速开始 ================= -->
+      <section id="start">
+        <div class="sec">
+          <!-- 编辑台实拍：四张截图看全流程 -->
+          <div class="shot-wrap rv">
+            <div class="shot-head">
+              <div class="kicker">快速开始</div>
+              <h2>四张截图，<em
+                 >看完全流程</em></h2>
+              <p class="sec-sub">从起始页建项目，到 AI 生成代码、一键发布——每个环节长什么样，一目了然。</p>
+            </div>
+            <div class="shot-carousel">
+              <div class="shot-track"
+                style="transition: none; transform: translateX(0px);">
+
+                <figure class="shot-cell">
+                  <div class="shot-main">
+                    <div class="shot-tag"><span class="shot-idx"
+                       >1</span><span class="shot-cap"
+                       >起始页 · 项目卡片墙</span></div>
+                    <div class="shot-frame">
+                      <img src="assets/studio-shot-home.webp" alt="起始页：项目卡片墙" loading="lazy"
+                        style="cursor: zoom-in;">
+                    </div>
+                  </div>
+                  <div class="shot-side">
+                    <div class="shot-notes">
+                      <div class="snote"><span class="sn"
+                         >A</span>
+                        <div><b
+                           >MCP
+                            已连接徽标</b><span>顶栏常驻，随时等待 AI 指令</span></div>
+                      </div>
+                      <div class="snote"><span class="sn"
+                         >B</span>
+                        <div><b
+                           >项目卡片墙</b><span
+                           >类型徽标、更新时间，重命名 / 复制 / 删除随手点</span></div>
+                      </div>
+                      <div class="snote"><span class="sn"
+                         >C</span>
+                        <div><b>+
+                            新建项目</b><span>设备 / 门窗 / 背景，三种类型三选一</span></div>
+                      </div>
+                    </div>
+                    <p class="shot-blurb">项目都在这一屏，建好了随时回来改；右下角新建下一个。</p>
+                  </div>
+                </figure>
+
+                <figure class="shot-cell">
+                  <div class="shot-main">
+                    <div class="shot-tag"><span class="shot-idx"
+                       >2</span><span class="shot-cap"
+                       >编辑页 · 给 AI 的提示词</span>
+                    </div>
+                    <div class="shot-frame">
+                      <img src="assets/studio-shot-prompt.webp" alt="编辑页：属性面板与 AI 提示词" loading="lazy"
+                        style="cursor: zoom-in;">
+                    </div>
+                  </div>
+                  <div class="shot-side">
+                    <div class="shot-notes">
+                      <div class="snote"><span class="sn"
+                         >A</span>
+                        <div><b
+                           >左侧图标栏</b><span
+                           >属性 / 字段 / 样式 / 部件 / 提示词 / 代码，一屏切换</span></div>
+                      </div>
+                      <div class="snote"><span class="sn"
+                         >B</span>
+                        <div><b>AI
+                            提示词 = 需求书</b><span>写清插件要什么，AI 按这里生成，不用改代码</span>
+                        </div>
+                      </div>
+                      <div class="snote"><span class="sn"
+                         >C</span>
+                        <div><b
+                           >随存随取</b><span
+                           >MCP 的 studio_get_project 会把 aiPrompt 原样带回</span>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="shot-blurb">需求写清楚，AI 就不用猜——改需求，永远比改代码快。</p>
+                  </div>
+                </figure>
+
+                <figure class="shot-cell">
+                  <div class="shot-main">
+                    <div class="shot-tag"><span class="shot-idx"
+                       >3</span><span class="shot-cap"
+                       >编辑页 · 3D 实时预览 + 2D
+                        平面</span></div>
+                    <div class="shot-frame">
+                      <img src="assets/studio-shot-preview.webp" alt="编辑页：可交互 3D 预览与 2D 平面预览" loading="lazy"
+                        style="cursor: zoom-in;">
+                    </div>
+                  </div>
+                  <div class="shot-side">
+                    <div class="shot-notes">
+                      <div class="snote"><span class="sn"
+                         >A</span>
+                        <div><b
+                           >中心可交互设备</b><span
+                           >左键旋转视角，改动实时重建渲染</span></div>
+                      </div>
+                      <div class="snote"><span class="sn"
+                         >B</span>
+                        <div><b
+                           >样式参数
+                            / 预览状态</b><span>左下滑条调开门方向、开门比例，所见即所得</span></div>
+                      </div>
+                      <div class="snote"><span class="sn"
+                         >C</span>
+                        <div><b>2D
+                            平面预览</b><span>右上角 plan2d 同步户型图里的效果</span></div>
+                      </div>
+                    </div>
+                    <p class="shot-blurb">转一圈、推个状态、截一张图，AI 验收和你看到的是同一个画面。</p>
+                  </div>
+                </figure>
+
+                <figure class="shot-cell">
+                  <div class="shot-main">
+                    <div class="shot-tag"><span class="shot-idx"
+                       >4</span><span class="shot-cap"
+                       >编辑页 · AI 生成的插件代码</span>
+                    </div>
+                    <div class="shot-frame">
+                      <img src="assets/studio-shot-code.webp" alt="编辑页：AI 生成的 plugin.js 代码" loading="lazy"
+                        style="cursor: zoom-in;">
+                    </div>
+                  </div>
+                  <div class="shot-side">
+                    <div class="shot-notes">
+                      <div class="snote"><span class="sn"
+                         >A</span>
+                        <div><b
+                           >plugin.js 单文件</b><span
+                           >219 行带语法高亮，写完即存、自动重建</span></div>
+                      </div>
+                      <div class="snote"><span class="sn"
+                         >B</span>
+                        <div><b>运行
+                            ▶ 一键看效果</b><span>提交前语法体检，写错兜底提醒</span></div>
+                      </div>
+                      <div class="snote"><span class="sn"
+                         >C</span>
+                        <div><b
+                           >改完就发布</b><span
+                           >预览满意，右上角一键发布到 ha-3d-home</span></div>
+                      </div>
+                    </div>
+                    <p class="shot-blurb">看不懂代码也没关系，它本来就是写给 AI 看的。</p>
+                  </div>
+                </figure>
+              </div>
+            </div>
+            <div class="shot-dots" aria-hidden="true"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= MCP 工具 ================= -->
+      <section id="mcp">
+        <div class="sec">
+          <div class="shot-head">
+            <div class="kicker">MCP 工具</div>
+            <h2>26 个工具，<em>AI
+                全流程读写与验证</em></h2>
+            <p class="sec-sub">从读取配置、生成代码，到推送状态、截图验收——WorkBuddy 这类 AI 助手经 MCP
+              全程操作工作台。</p>
+          </div>
+          <!-- 提示词 → AI 生成 → 实时预览：左图 + 可拖动模型 + 多轮对话 -->
+          <div class="demo-wrap rv">
+            <figure class="demo-shot">
+              <div class="shot-frame">
+                <img src="images/img-1793775721827-b8pjc4.png" alt="给 AI 的提示词" loading="lazy"
+                  style="cursor: zoom-in;" data-original-src=""
+                  data-last-crop-x="" data-last-crop-y="" data-last-crop-w="" data-last-crop-h="">
+              </div>
+            </figure>
+            <div class="demo-col">
+              <div class="demo-panel">
+                <div class="demo-canvas" id="demoCanvas">
+                  <div class="d3stage" id="d3Stage">
+                    <div class="d3world" id="d3World"
+                      style="--rx: 62deg; --rz: -28deg;">
+                      <div class="d3floor"></div>
+                      <div class="d3shadow"></div>
+                      <div class="d3jamb l"></div>
+                      <div class="d3jamb r"></div>
+                      <div class="d3beam"></div>
+                      <div class="d3leaf" id="d3Leaf"><i
+                         ></i></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="demo-note rv" style="padding: 9px;margin: 0;">
+                  这是用 CSS 3D 复刻的交互模型，用来体验布局与手感；真实版本是 Three.js + GLB 模型，光影、材质与家具细节看下面的实机截图。
+                </div>
+              </div>
+              <div class="demo-panel demo-chat">
+                <div class="chat-view">
+                  <div class="chat-flow" id="chatFlow">
+                    <div class="cb me">使用 🔌 ha3d-plugin-dev
+                      修复项目：现在门和门框有很大的缝隙，需要稍微放大一些门，适配门框</div>
+                    <div class="cb ai"><b
+                       >WorkBuddy</b>尺寸真相已查明：<code
+                       >frame.glb</code> 内洞 = 宽 0.90 × 高
+                      2.05；<code>leaf.glb</code> 门扇 0.86 宽 × 1.98 高。现有代码门扇只缩到
+                      0.82 宽，比洞口窄 8cm —— 这就是大缝隙的来源。修正：门扇四边只留 1cm
+                      合缝，宽 L−0.02、高 2.03。</div>
+                    <div class="cb me">卷帘门的帘片也顺手加宽一点</div>
+                    <div class="cb ai"><b
+                       >WorkBuddy</b>已同步：帘片宽度从 L−0.06 加宽到 L−0.03，语法体检通过，预览已重建
+                      ✅</div>
+                    <div class="cb me">背景插件：小树苗要多一点</div>
+                    <div class="cb ai"><b
+                       >WorkBuddy</b>树苗 40 → 120 棵，围绕房屋随机种植，苗高 0.25–0.45
+                      随机分布。</div>
+                    <div class="cb me">大大小小的山要放在背景的左上角</div>
+                    <div class="cb ai"><b
+                       >WorkBuddy</b>已加三层远山错落放在左上角，透视层次感更强，点「运行 ▶」马上就能看到 ✅
+                    </div>
+                    <div class="cb me chat-dup" aria-hidden="true">使用 🔌
+                      ha3d-plugin-dev 修复项目：现在门和门框有很大的缝隙，需要稍微放大一些门，适配门框</div>
+                    <div class="cb ai chat-dup" aria-hidden="true"><b
+                       >WorkBuddy</b>尺寸真相已查明：<code
+                       >frame.glb</code> 内洞 = 宽 0.90 × 高
+                      2.05；<code>leaf.glb</code> 门扇 0.86 宽 × 1.98 高。现有代码门扇只缩到
+                      0.82 宽，比洞口窄 8cm —— 这就是大缝隙的来源。修正：门扇四边只留 1cm
+                      合缝，宽 L−0.02、高 2.03。</div>
+                    <div class="cb me chat-dup" aria-hidden="true">
+                      卷帘门的帘片也顺手加宽一点</div>
+                    <div class="cb ai chat-dup" aria-hidden="true"><b
+                       >WorkBuddy</b>已同步：帘片宽度从 L−0.06 加宽到 L−0.03，语法体检通过，预览已重建
+                      ✅</div>
+                    <div class="cb me chat-dup" aria-hidden="true">
+                      背景插件：小树苗要多一点</div>
+                    <div class="cb ai chat-dup" aria-hidden="true"><b
+                       >WorkBuddy</b>树苗 40 → 120 棵，围绕房屋随机种植，苗高 0.25–0.45
+                      随机分布。</div>
+                    <div class="cb me chat-dup" aria-hidden="true">
+                      大大小小的山要放在背景的左上角</div>
+                    <div class="cb ai chat-dup" aria-hidden="true"><b
+                       >WorkBuddy</b>已加三层远山错落放在左上角，透视层次感更强，点「运行 ▶」马上就能看到 ✅
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="demo-note rv">
+            <span class="badge">说明</span>
+            上面的图片，可拖动门，模拟的多轮对话之间没有关联，仅供示意
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 真实生成案例 ================= -->
+      <section id="cases">
+        <div class="sec">
+          <div class="sec-head rv">
+            <div class="kicker">真实生成案例</div>
+            <h2>一句话，<em>生成即所见</em>
+            </h2>
+            <p class="sec-sub">全部由 AI 在工作台里真实生成、直接运行的效果截图。</p>
+          </div>
+          <div class="case-grid rv">
+            <figure class="case-cell"><img src="assets/case-door.png"
+                alt="AI 生成的木门模型" loading="lazy" style="cursor: zoom-in;">
+            </figure>
+            <figure class="case-cell"><img src="assets/case-roller.png"
+                alt="AI 生成的卷帘门" loading="lazy" style="cursor: zoom-in;">
+            </figure>
+            <figure class="case-cell"><img src="assets/case-lamp.png"
+                alt="AI 生成的落地灯" loading="lazy" style="cursor: zoom-in;">
+            </figure>
+            <figure class="case-cell"><img src="assets/case-map.png"
+                alt="AI 生成的地形场景" loading="lazy" style="cursor: zoom-in;">
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 部署 ================= -->
+      <section id="deploy">
+        <div class="sec">
+          <div class="sec-head rv">
+            <div class="kicker">开始部署</div>
+            <h2>一条命令，<em
+               >在自己家里跑起来</em></h2>
+            <p class="sec-sub">单容器、一条 <code
+               >docker compose up -d --build</code> 起来。挂一个卷（插件项目），升级镜像不丢数据。
+            </p>
+          </div>
+
+          <div class="dsplit rv">
+            <span class="dnum">01</span>
+            <b>HA 3D Plugin Studio</b>
+            <span class="dmeta">插件工作台 · 8098 · 256MB · data 一个卷 · 内置 MCP
+              Server</span>
+          </div>
+
+          <div class="deploy-grid">
+            <div class="deploy-steps rv">
+              <div class="dstep">
+                <span class="n">1</span>
+                <div><b>起服务</b>
+                  <p><code
+                     >docker compose up -d --build</code>，或本地 <code
+                     >npm install &amp;&amp; npm run client:build &amp;&amp; npm start</code>（首次需装依赖并构建前端）。
+                  </p>
+                </div>
+              </div>
+              <div class="dstep">
+                <span class="n">2</span>
+                <div><b>打开
+                    8098</b>
+                  <p>浏览器访问 <code
+                     >http://主机IP:8098</code>，新建插件项目：传 GLB、摆部件、绑 HA
+                    实体，改动实时预览。</p>
+                </div>
+              </div>
+              <div class="dstep">
+                <span class="n">3</span>
+                <div><b>接入 AI</b>
+                  <p>在 WorkBuddy 里添加 MCP 地址 <code
+                     >http://主机IP:8098/mcp/sse</code>，
+                    26 个工具全流程可用，一句话让 AI 把插件写出来。</p>
+                </div>
+              </div>
+              <div class="dstep">
+                <span class="n">4</span>
+                <div><b>发布回
+                    Home</b>
+                  <p>Studio 设置里填 Home 地址（如 <code
+                     >http://主机IP:8099</code>）与安装密钥，一键发布——Home 需在线。</p>
+                </div>
+              </div>
+              <p class="muted" style="font-size:12px;margin-top:6px">
+                💡 两个容器在同一台机器上时，Studio 填 <code
+                 >http://host.docker.internal:8099</code>（Linux 用宿主机内网 IP）。
+              </p>
+            </div>
+
+            <div class="code-card rv">
+              <div class="code-head">
+                <span class="dots"><i
+                   ></i><i></i><i
+                   ></i></span>
+                docker-compose.yml
+              </div>
+              <pre class="code"
+               >services:
+  ha3d-plugin-studio:
+    build: .
+    image: ha3d-plugin-studio:latest
+    container_name: ha3d-plugin-studio
+    ports:
+      - <span class="s">"8098:8098"</span>
+    volumes:
+      - <span class="s">"./data:/data"</span>          <span class="c"># 插件项目 + 全局配置</span>
+    environment:
+      NODE_ENV: production
+      PORT: <span class="n">8098</span>
+      HA3D_STUDIO_DATA_DIR: /data     <span class="c"># 数据目录走卷</span>
+    restart: unless-stopped
+    mem_limit: 256m                  <span class="c"># 拆 GLB / 打包时略吃内存</span></pre>
+              <div style="padding:16px 18px 18px;border-top:1px solid var(--line)"
+               >
+                <p class="muted" style="margin:0 0 10px;font-size:12.5px">
+                  同样是离线包（镜像里已构建好前端与生产依赖）：</p>
+                <pre class="code code-lite" style="font-size:11.5px"><span class="c"># 产物 dist/ha3d-plugin-studio-latest-&lt;arch&gt;.tar → docker load</span>
+npm run pack:image:amd64</pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="rv"
+            style="margin-top:22px;padding:14px 18px;border:1px solid rgba(240,166,63,.35);background:rgba(240,166,63,.07);border-radius:12px;font-size:13px;line-height:1.7;color:#8a5300"
+           >
+            📦 <b style="color:#b96a06">Docker 镜像暂时未上传镜像仓库</b>：可以先拉代码，在本地执行
+            <code
+              style="font-size:12px;padding:1px 7px;border-radius:6px;background:#f1f6fd;border:1px solid var(--line)"
+             >docker compose up -d --build</code>
+            或 <code
+              style="font-size:12px;padding:1px 7px;border-radius:6px;background:#f1f6fd;border:1px solid var(--line)"
+             >npm run pack:image</code>
+            打包后部署，步骤见上面。
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ================= 页脚 ================= -->
+    <footer>
+      <div class="foot-in">
+        <div>
+          <div class="foot-brand">
+            <span class="roof">🧩</span>
+            <b style="font-size:16px">HA 3D Plugin Studio</b>
+            <span class="muted" style="font-size:12px">· ha-3d-home
+              图形化插件开发台</span>
+          </div>
+          <div class="foot-note">
+            图形化装配 + MCP 接入，让 AI 助手全流程开发与验证 ha-3d-home 的 3D 插件。
+            项目本身也是开源的，与 <a href="index.html">HA 3D Home</a> 配套使用。
+          </div>
+          <div class="foot-meta">纯静态展示页 · 与 HA 3D Home 官网同款风格</div>
+        </div>
+        <div class="foot-links">
+          <a href="#features">核心能力</a>
+          <a href="#start">快速开始</a>
+          <a href="#mcp">MCP 工具</a>
+          <a href="#deploy">部署</a>
+          <a href="index.html">HA 3D Home</a>
+          <a href="https://gitee.com/sunhuip/ha3d-plugin-studio" target="_blank" rel="noopener"
+           >Gitee</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+  <script src="js/main.js?v=20261119"></script>
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>
