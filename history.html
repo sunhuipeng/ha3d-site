@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>开发历程 · HA 3D Home 生态的 8 天</title>
+  <meta name="description"
+    content="HA 3D Home 生态的 8 天开发历程：8 天、40 次提交、2403 行开发日志、30 个 MCP 工具。人定方向、AI 落地、当天推翻当天改的完整时间线与决策对照。">
+  <meta name="theme-color" content="#f7fafd">
+  <meta name="color-scheme" content="light">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="开发历程 · HA 3D Home 生态的 8 天">
+  <meta property="og:description" content="从一块 3D 地板到四个仓库：可视化端、插件开发台、AI 技能包、展示站。8 天时间线与 8 个被推翻的设计。">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9C%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css?v=20261128">
+  <style>
+    /* ==========================================================================
+       开发历程页（history.html）
+       仅本页使用的组件样式：全部沿用 style.css 的变量与卡片语言
+       ========================================================================== */
+
+    /* ---------- Hero 右侧：8 天日志清单 ---------- */
+    .hx-days {
+      border-radius: var(--radius);
+      border: 1px solid var(--line-2);
+      background: linear-gradient(160deg, #ffffff, #f7fbff);
+      box-shadow: 0 40px 90px -48px rgba(18, 44, 84, .5), 0 0 0 1px rgba(18, 44, 84, .05);
+      padding: 8px;
+    }
+
+    .hx-days-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 13px 14px 11px;
+      font-size: 11.5px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--dim);
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 6px;
+    }
+
+    .hx-days-head b {
+      color: var(--amber);
+      letter-spacing: .1em;
+    }
+
+    .hx-daylist {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .hx-daylist li {
+      display: grid;
+      grid-template-columns: 30px 52px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 11px;
+      transition: background .2s, transform .25s var(--ease);
+    }
+
+    .hx-daylist li:hover {
+      background: rgba(247, 171, 46, .09);
+      transform: translateX(2px);
+    }
+
+    .hx-daylist i {
+      font-style: normal;
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--amber);
+      background: rgba(247, 171, 46, .12);
+      border: 1px solid rgba(247, 171, 46, .28);
+      border-radius: 7px;
+      text-align: center;
+      padding: 3px 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hx-daylist b {
+      font-size: 12.5px;
+      font-weight: 650;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hx-daylist span {
+      font-size: 13.5px;
+      color: var(--text-2);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .hx-daylist em {
+      font-style: normal;
+      font-size: 11px;
+      color: var(--dim);
+    }
+
+    /* ---------- 引用块 ---------- */
+    .hx-quote {
+      margin: 26px 0 0;
+      padding: 18px 22px;
+      border-radius: 14px;
+      border: 1px solid rgba(247, 171, 46, .28);
+      border-left: 3px solid var(--amber);
+      background: linear-gradient(120deg, rgba(247, 171, 46, .1), rgba(247, 171, 46, .02));
+      font-size: 15px;
+      color: var(--text-2);
+      line-height: 1.72;
+    }
+
+    .hx-quote b {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    /* ---------- 四个项目卡 ---------- */
+    .hx-projects {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .hx-proj {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 22px 24px 20px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: linear-gradient(170deg, #ffffff, #fbfdff);
+      box-shadow: 0 1px 2px rgba(18, 44, 84, .04), 0 18px 40px -34px rgba(18, 44, 84, .5);
+      transition: transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s;
+    }
+
+    .hx-proj:hover {
+      transform: translateY(-3px);
+      border-color: rgba(247, 171, 46, .38);
+      box-shadow: 0 22px 46px -30px rgba(18, 44, 84, .42);
+    }
+
+    .hx-proj-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hx-proj-ic {
+      flex: none;
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      font-size: 16px;
+      background: linear-gradient(150deg, rgba(247, 171, 46, .22), rgba(247, 171, 46, .07));
+      border: 1px solid rgba(247, 171, 46, .22);
+    }
+
+    .hx-proj-name {
+      font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 13.5px;
+      font-weight: 650;
+      letter-spacing: -.01em;
+    }
+
+    .hx-proj-role {
+      font-size: 12px;
+      color: var(--dim);
+      margin-top: 1px;
+    }
+
+    .hx-proj-port {
+      margin-left: auto;
+      flex: none;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--amber-2);
+      background: rgba(247, 171, 46, .1);
+      border: 1px solid rgba(247, 171, 46, .26);
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hx-proj p {
+      margin: 0;
+      font-size: 13.5px;
+      line-height: 1.68;
+      color: var(--text-2);
+    }
+
+    .hx-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .hx-chip {
+      font-size: 11.5px;
+      color: var(--text-2);
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: rgba(18, 44, 84, .035);
+    }
+
+    .hx-proj-meta {
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(18, 44, 84, .12);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      font-size: 12px;
+      color: var(--dim);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hx-proj-meta b {
+      color: var(--text-2);
+      font-weight: 650;
+    }
+
+    /* ---------- 时间线 ---------- */
+    .hx-tl {
+      position: relative;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .hx-tl::before {
+      content: "";
+      position: absolute;
+      left: 77px;
+      top: 10px;
+      bottom: 26px;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(221, 122, 8, .5), rgba(18, 44, 84, .14) 10%, rgba(18, 44, 84, .08) 86%, transparent);
+    }
+
+    .hx-tl-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 78px 1fr;
+      gap: 34px;
+      padding-bottom: 18px;
+    }
+
+    .hx-tl-item::before {
+      content: "";
+      position: absolute;
+      left: 71px;
+      top: 25px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid var(--amber);
+      box-shadow: 0 0 0 5px rgba(247, 171, 46, .13);
+    }
+
+    .hx-tl-mark {
+      text-align: right;
+      padding-top: 20px;
+    }
+
+    .hx-tl-mark b {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--amber);
+    }
+
+    .hx-tl-mark span {
+      font-size: 12.5px;
+      color: var(--dim);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hx-tl-card {
+      padding: 22px 24px 20px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: linear-gradient(170deg, #ffffff, #fbfdff);
+      box-shadow: 0 1px 2px rgba(18, 44, 84, .04), 0 18px 40px -34px rgba(18, 44, 84, .5);
+      transition: border-color .3s, box-shadow .3s;
+    }
+
+    .hx-tl-card:hover {
+      border-color: rgba(247, 171, 46, .3);
+      box-shadow: 0 24px 48px -34px rgba(18, 44, 84, .5);
+    }
+
+    .hx-tl-card h3 {
+      font-size: 20px;
+      margin: 0 0 12px;
+      letter-spacing: -.012em;
+    }
+
+    .hx-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .hx-tag {
+      font-size: 11px;
+      font-weight: 650;
+      padding: 2px 8px;
+      border-radius: 99px;
+      color: var(--amber-2);
+      background: rgba(247, 171, 46, .1);
+      border: 1px solid rgba(247, 171, 46, .28);
+    }
+
+    .hx-tag.dim {
+      color: var(--dim);
+      background: rgba(18, 44, 84, .04);
+      border-color: var(--line);
+    }
+
+    .hx-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .hx-list li {
+      position: relative;
+      padding-left: 16px;
+      font-size: 14px;
+      line-height: 1.66;
+      color: var(--text-2);
+    }
+
+    .hx-list li::before {
+      content: "";
+      position: absolute;
+      left: 2px;
+      top: .64em;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(221, 122, 8, .6);
+    }
+
+    .hx-list b,
+    .hx-tl-card p b {
+      color: var(--text);
+      font-weight: 650;
+    }
+
+    .hx-list code,
+    .hx-note code {
+      font-size: 12px;
+      color: var(--amber-2);
+      background: rgba(247, 171, 46, .1);
+      border: 1px solid rgba(247, 171, 46, .2);
+      border-radius: 5px;
+      padding: 1px 5px;
+    }
+
+    .hx-note {
+      margin: 15px 0 0;
+      padding-left: 11px;
+      border-left: 2px solid rgba(247, 171, 46, .4);
+      font-size: 12.5px;
+      line-height: 1.65;
+      color: var(--dim);
+    }
+
+    /* ---------- 决策对照 ---------- */
+    .hx-dc-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .hx-dc {
+      position: relative;
+      padding: 20px 22px 18px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: linear-gradient(170deg, #ffffff, #fbfdff);
+      box-shadow: 0 1px 2px rgba(18, 44, 84, .04), 0 16px 34px -32px rgba(18, 44, 84, .55);
+    }
+
+    .hx-dc-n {
+      position: absolute;
+      right: 18px;
+      top: 16px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .1em;
+      color: rgba(18, 44, 84, .22);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hx-row {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 10px;
+      padding: 9px 0;
+      border-top: 1px dashed rgba(18, 44, 84, .13);
+    }
+
+    .hx-row:first-of-type {
+      border-top: 0;
+      padding-top: 2px;
+    }
+
+    .hx-row>span {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      color: var(--dim);
+      padding-top: 3px;
+    }
+
+    .hx-row p {
+      margin: 0;
+      font-size: 13.5px;
+      line-height: 1.62;
+      color: var(--text-2);
+    }
+
+    .hx-row.new>span {
+      color: var(--amber);
+    }
+
+    .hx-row.new p {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .hx-row.why p {
+      font-size: 12.5px;
+      color: var(--dim);
+    }
+
+    .hx-row code {
+      font-size: 12px;
+      color: var(--amber-2);
+      background: rgba(247, 171, 46, .1);
+      border: 1px solid rgba(247, 171, 46, .2);
+      border-radius: 5px;
+      padding: 1px 5px;
+    }
+
+    .hx-dc-arr {
+      margin: 2px 0 2px 52px;
+      font-size: 12px;
+      line-height: 1;
+      color: var(--amber);
+      opacity: .75;
+    }
+
+    /* ---------- 三阶段 ---------- */
+    .hx-phases {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .hx-phase {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 22px 22px 20px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: linear-gradient(170deg, #ffffff, #fbfdff);
+      box-shadow: 0 1px 2px rgba(18, 44, 84, .04), 0 18px 40px -34px rgba(18, 44, 84, .5);
+    }
+
+    .hx-phase-k {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--amber);
+    }
+
+    .hx-phase h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .hx-phase p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.68;
+      color: var(--text-2);
+    }
+
+    .hx-flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 5px;
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px dashed rgba(18, 44, 84, .12);
+    }
+
+    .hx-flow span {
+      font-size: 11.5px;
+      color: var(--text-2);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: rgba(18, 44, 84, .035);
+    }
+
+    .hx-flow i {
+      font-style: normal;
+      font-size: 11px;
+      color: var(--dim);
+    }
+
+    /* ---------- 数据看板 ---------- */
+    .hx-nums {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .hx-num {
+      padding: 20px 20px 18px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: linear-gradient(170deg, #ffffff, #fcfdff);
+      box-shadow: 0 1px 2px rgba(18, 44, 84, .04), 0 16px 34px -34px rgba(18, 44, 84, .55);
+    }
+
+    .hx-num b {
+      display: block;
+      font-size: 32px;
+      line-height: 1.05;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hx-num span {
+      display: block;
+      margin-top: 4px;
+      font-size: 12.5px;
+      color: var(--dim);
+    }
+
+    .hx-num em {
+      display: block;
+      margin-top: 10px;
+      font-style: normal;
+      font-size: 11.5px;
+      font-weight: 650;
+      color: var(--amber-2);
+    }
+
+    .hx-board {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 16px;
+    }
+
+    .hx-board-card {
+      padding: 22px 24px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: linear-gradient(170deg, #ffffff, #fbfdff);
+      box-shadow: 0 1px 2px rgba(18, 44, 84, .04), 0 16px 34px -34px rgba(18, 44, 84, .55);
+    }
+
+    .hx-board-card h3 {
+      font-size: 15px;
+      margin: 0 0 4px;
+    }
+
+    .hx-board-sub {
+      font-size: 12px;
+      color: var(--dim);
+      margin-bottom: 16px;
+    }
+
+    .hx-bar {
+      margin-bottom: 14px;
+    }
+
+    .hx-bar:last-child {
+      margin-bottom: 0;
+    }
+
+    .hx-bar-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-2);
+      margin-bottom: 7px;
+    }
+
+    .hx-bar-head b {
+      font-weight: 650;
+      color: var(--text);
+    }
+
+    .hx-bar-head em {
+      font-style: normal;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .hx-bar-row {
+      display: grid;
+      grid-template-columns: 52px 1fr 68px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 11.5px;
+      color: var(--dim);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hx-bar-row i {
+      display: block;
+      height: 9px;
+      border-radius: 99px;
+      width: var(--w, 100%);
+      background: linear-gradient(90deg, rgba(247, 171, 46, .45), rgba(247, 171, 46, .85));
+    }
+
+    .hx-bar-row i.ok {
+      background: linear-gradient(90deg, rgba(10, 150, 104, .45), rgba(10, 150, 104, .8));
+    }
+
+    .hx-bar-row em {
+      font-style: normal;
+      text-align: right;
+    }
+
+    .hx-size {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 9px;
+    }
+
+    .hx-size li {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: baseline;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed rgba(18, 44, 84, .12);
+      font-size: 13px;
+      color: var(--text-2);
+    }
+
+    .hx-size li:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .hx-size b {
+      font-weight: 650;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hx-size small {
+      display: block;
+      font-size: 11.5px;
+      color: var(--dim);
+    }
+
+    /* ---------- 收尾 CTA ---------- */
+    .hx-end {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      padding: 30px 32px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(247, 171, 46, .3);
+      background:
+        radial-gradient(600px 220px at 88% 0%, rgba(255, 176, 64, .18), transparent 70%),
+        linear-gradient(160deg, #ffffff, #fffdf8);
+      box-shadow: 0 24px 60px -42px rgba(18, 44, 84, .55);
+    }
+
+    .hx-end h3 {
+      margin: 0 0 6px;
+      font-size: 21px;
+    }
+
+    .hx-end p {
+      margin: 0;
+      font-size: 13.5px;
+      color: var(--text-2);
+      max-width: 560px;
+    }
+
+    /* ---------- 响应式 ---------- */
+    @media (max-width: 1080px) {
+      .hx-projects,
+      .hx-dc-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hx-phases {
+        grid-template-columns: 1fr;
+      }
+
+      .hx-nums {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hx-board {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 780px) {
+      .hx-days {
+        max-width: 520px;
+      }
+
+      .hx-tl::before {
+        left: 7px;
+      }
+
+      .hx-tl-item {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding-left: 26px;
+      }
+
+      .hx-tl-item::before {
+        left: 1px;
+        top: 10px;
+      }
+
+      .hx-tl-mark {
+        text-align: left;
+        padding-top: 0;
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+      }
+
+      .hx-tl-mark b {
+        display: inline;
+      }
+
+      .hx-tl-card {
+        padding: 18px 18px 16px;
+      }
+
+      .hx-nums {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hx-proj,
+      .hx-daylist li {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip" href="#main">跳到主要内容</a>
+  <div class="grain"></div>
+  <div class="wrap">
+
+    <!-- ================= 导航 ================= -->
+    <nav class="nav" id="nav">
+      <div class="nav-in">
+        <a class="brand" href="#top">
+          <span class="roof">📜</span>
+          开发历程
+          <small>Build in Public</small>
+        </a>
+        <div class="nav-links">
+          <a href="#projects">四个项目</a>
+          <a href="#timeline">8 天时间线</a>
+          <a href="#decisions">决策对照</a>
+          <a href="#phases">架构演进</a>
+          <a href="#numbers">数据看板</a>
+          <a href="index.html">HA 3D Home</a>
+          <a href="studio.html">插件工作台</a>
+          <a href="https://gitee.com/sunhuip/ha-3d-home" target="_blank" rel="noopener" class="nav-gh"
+            aria-label="Gitee 源码仓库">Gitee</a>
+        </div>
+      </div>
+    </nav>
+
+    <main id="main">
+
+      <!-- ================= HERO ================= -->
+      <header class="hero" id="top">
+        <div class="hero-in">
+          <div class="hero-copy">
+            <div class="eyebrow rv">
+              <b>BUILD IN PUBLIC</b>
+              <span class="pulse-dot"></span>
+              2026-10-30 → 11-06 · 2403 行开发日志
+            </div>
+            <h1 class="rv" style="--d:.06s">
+              8 天，从一块地板<br><span class="grad">长成一整套 3D 生态</span>
+            </h1>
+            <p class="lede rv" style="--d:.12s">
+              一个人出思路和需求，<b>AI Agent 全程落地</b>：从「Home Assistant 3D 全屋智能控制中心」，
+              长出可视化端（home）→ 图形化插件开发台 + MCP（studio）→ AI 技能包（skill）→ 展示站（site）。
+              没有一步到位，只有<b>当天推翻、当天重写</b>。
+            </p>
+            <div class="cta-row rv" style="--d:.18s">
+              <a class="btn primary" href="#timeline">看 8 天时间线 <span class="ar">→</span></a>
+              <a class="btn" href="#decisions">8 个被推翻的设计</a>
+              <a class="btn" href="index.html">回到项目首页</a>
+            </div>
+            <div class="stats rv" style="--d:.27s">
+              <div class="stat"><b data-count="8">8</b><span>天</span></div>
+              <div class="stat"><b data-count="40">40</b><span>次提交</span></div>
+              <div class="stat"><b data-count="30">30</b><span>个 MCP 工具</span></div>
+              <div class="stat"><b data-count="2403">2403</b><span>行开发日志</span></div>
+            </div>
+          </div>
+
+          <div class="hero-art rv" style="--d:.1s">
+            <div class="hx-days">
+              <div class="hx-days-head">
+                <b>迭代节奏</b>
+                <span>8 个工作日 · 4 个仓库</span>
+              </div>
+              <ol class="hx-daylist">
+                <li><i>01</i><b>10-30</b><span>从零到能用</span><em>8 轮</em></li>
+                <li><i>02</i><b>10-31</b><span>把语义统一</span><em>3 项</em></li>
+                <li><i>03</i><b>11-01</b><span>收敛与重构</span><em>技术债</em></li>
+                <li><i>04</i><b>11-02</b><span>studio 诞生</span><em>双页</em></li>
+                <li><i>05</i><b>11-03</b><span>MCP + 技能</span><em>转折点</em></li>
+                <li><i>06</i><b>11-04</b><span>双线并进 + 建站</span><em>方案 B</em></li>
+                <li><i>07</i><b>11-05</b><span>架构收敛</span><em>一个入口</em></li>
+                <li><i>08</i><b>11-06</b><span>体验与工程化</span><em>配置锁</em></li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div class="tech-strip rv" style="--d:.3s">
+          <span>记录来源</span>
+          <span class="dotline"></span>
+          <span>8 天开发日志</span><span>git 提交</span><span>四个仓库实测</span>
+          <span>代码量 / 工具数 / 压缩收益</span>
+        </div>
+      </header>
+
+      <!-- ================= 四个项目 ================= -->
+      <section id="projects">
+        <div class="sec">
+          <div class="sec-head rv">
+            <div class="kicker">概览</div>
+            <h2>一个人出方向，<em>一整套生态落地</em></h2>
+            <p class="sec-sub">
+              8 天、40 次提交、2403 行开发日志。最终沉淀成四个仓库：可视化端负责「住」，
+              开发台负责「造」，技能包负责「教 AI 怎么造」，展示站负责「讲清楚」。
+            </p>
+          </div>
+
+          <div class="hx-projects">
+            <article class="hx-proj rv">
+              <div class="hx-proj-top">
+                <span class="hx-proj-ic">🏠</span>
+                <div>
+                  <div class="hx-proj-name">ha-3d-home</div>
+                  <div class="hx-proj-role">家庭版 · 3D 可视化控制中心</div>
+                </div>
+                <span class="hx-proj-port">:8099</span>
+              </div>
+              <p>2D 画户型 → 3D 看全屋 → 大屏控制，直连 Home Assistant。灯真的会亮，窗帘真的会开，门磁一开 3D 里的门就转过来。</p>
+              <div class="hx-chips">
+                <span class="hx-chip">Vue 3 global build</span>
+                <span class="hx-chip">Three.js</span>
+                <span class="hx-chip">Node 零依赖</span>
+                <span class="hx-chip">全插件化</span>
+              </div>
+              <div class="hx-proj-meta">
+                <span>前端 <b>5667</b> 行 / 9 个模块</span>
+                <span>服务端 <b>749</b> 行 / 4 个文件</span>
+                <span>插件 <b>20</b> 个</span>
+              </div>
+            </article>
+
+            <article class="hx-proj rv" style="--d:.06s">
+              <div class="hx-proj-top">
+                <span class="hx-proj-ic">🧩</span>
+                <div>
+                  <div class="hx-proj-name">ha3d-plugin-studio</div>
+                  <div class="hx-proj-role">插件开发台 · 内置 MCP Server</div>
+                </div>
+                <span class="hx-proj-port">:8098</span>
+              </div>
+              <p>图形化造插件：装配 GLB、绑定实体、实时预览。内置 MCP Server 让 AI 直接读写与验证，一句话需求就能出插件包。</p>
+              <div class="hx-chips">
+                <span class="hx-chip">Express</span>
+                <span class="hx-chip">Vue 3 + Vite</span>
+                <span class="hx-chip">SSE + WebSocket 中继</span>
+                <span class="hx-chip">30 个 MCP 工具</span>
+              </div>
+              <div class="hx-proj-meta">
+                <span>server <b>3111</b> 行</span>
+                <span>client <b>7160</b> 行 / <b>14</b> 个组件</span>
+              </div>
+            </article>
+
+            <article class="hx-proj rv" style="--d:.12s">
+              <div class="hx-proj-top">
+                <span class="hx-proj-ic">📜</span>
+                <div>
+                  <div class="hx-proj-name">ha3d-skill</div>
+                  <div class="hx-proj-role">AI 技能包 · 把流程固化下来</div>
+                </div>
+                <span class="hx-proj-port">独立仓库</span>
+              </div>
+              <p>把「怎么开发插件」写成 WorkBuddy 能照着执行的流程：环境检查 → 锁定 → 拉配置/代码 → 配置项同步 → 生成代码 → 验证 → 解锁。</p>
+              <div class="hx-chips">
+                <span class="hx-chip">Markdown 流程</span>
+                <span class="hx-chip">60 行零依赖脚本</span>
+                <span class="hx-chip">复用 studio 的 MCP SDK</span>
+              </div>
+              <div class="hx-proj-meta">
+                <span>SKILL.md <b>32.6KB</b></span>
+                <span>references <b>888</b> 行</span>
+                <span>安装说明 + 排查表</span>
+              </div>
+            </article>
+
+            <article class="hx-proj rv" style="--d:.18s">
+              <div class="hx-proj-top">
+                <span class="hx-proj-ic">🖥️</span>
+                <div>
+                  <div class="hx-proj-name">ha3d-site</div>
+                  <div class="hx-proj-role">展示站 · 你正在看的这套页面</div>
+                </div>
+                <span class="hx-proj-port">纯静态</span>
+              </div>
+              <p>把项目讲清楚：首页带可交互的 CSS 3D 演示，工作台页讲 MCP 能力，本页讲 8 天怎么长出来的。无构建、无依赖。</p>
+              <div class="hx-chips">
+                <span class="hx-chip">HTML / CSS / JS</span>
+                <span class="hx-chip">无框架</span>
+                <span class="hx-chip">任意静态托管</span>
+              </div>
+              <div class="hx-proj-meta">
+                <span>index <b>1306</b> 行</span>
+                <span>studio <b>944</b> 行</span>
+                <span>加上本页</span>
+              </div>
+            </article>
+          </div>
+
+          <blockquote class="hx-quote rv">
+            不吹「AI 自动写完」。更真实的过程是：<b>人定方向、AI 落地、天天返工</b> ——
+            下面这些「当天推翻」的细节，才是这套东西能跑起来的原因。
+          </blockquote>
+        </div>
+      </section>
+
+      <!-- ================= 时间线 ================= -->
+      <section id="timeline">
+        <div class="sec">
+          <div class="sec-head rv">
+            <div class="kicker">8 天时间线</div>
+            <h2>每天一次<em>方向修正</em></h2>
+            <p class="sec-sub">
+              按开发日志逐日还原。不是功能清单，而是「这天想明白了什么、推翻了什么」。
+            </p>
+          </div>
+
+          <ol class="hx-tl">
+            <li class="hx-tl-item rv">
+              <div class="hx-tl-mark">
+                <b>Day 1</b>
+                <span>10-30</span>
+              </div>
+              <div class="hx-tl-card">
+                <h3>从零到能用：一天跑完八轮</h3>
+                <div class="hx-tags">
+                  <span class="hx-tag">架构奠基</span>
+                  <span class="hx-tag dim">自研开源版</span>
+                  <span class="hx-tag dim">8 轮迭代</span>
+                </div>
+                <ul class="hx-list">
+                  <li>起点：参考项目只发闭源镜像，于是<b>自研开源版</b>，从一块地板开始搭。</li>
+                  <li>两个关键架构选择：<b>前端直连 HA WebSocket</b>（<code>subscribe_entities</code> 实时推送，绕开 CORS）；<b>服务端零 npm 依赖</b>（静态托管 + JSON 持久化 + REST 兜底代理）。</li>
+                  <li>同日八轮：Vue 3 重写 UI → 1s 防抖自动保存 → <code>/display</code> 大屏独立页 → <b>墙体真实掏洞</b>（门留 2.05m、窗留 0.9~2.1m）→ <b>家具 GLB 资产化</b>（自写生成器，20+ 模型）→ 设备造型表 → 背景插件化。</li>
+                  <li>当天就验证了「多背景插件并存」：<code>background</code>（地面）+ <code>garden</code>（院子）。</li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="hx-tl-item rv">
+              <div class="hx-tl-mark">
+                <b>Day 2</b>
+                <span>10-31</span>
+              </div>
+              <div class="hx-tl-card">
+                <h3>把语义统一，替后面的插件体系铺路</h3>
+                <div class="hx-tags">
+                  <span class="hx-tag">语义统一</span>
+                  <span class="hx-tag dim">插件契约</span>
+                </div>
+                <ul class="hx-list">
+                  <li>2D 的「开 / 关」判定改为<b>跟随插件自己的 <code>click.isOn</code></b>，不再由客户端猜设备类型。</li>
+                  <li>背景插件 API 统一成「返回一个 <code>group</code>」，和 3D 设备同构 —— 后面才能一视同仁地渲染。</li>
+                  <li>家具图标搬进 <code>catalog.json</code>；字段 <code>dtype</code> → <code>type</code> 统一。</li>
+                  <li>全量注释 / 文档审查一轮，准备对外发行。</li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="hx-tl-item rv">
+              <div class="hx-tl-mark">
+                <b>Day 3</b>
+                <span>11-01</span>
+              </div>
+              <div class="hx-tl-card">
+                <h3>收敛与重构：技术债日</h3>
+                <div class="hx-tags">
+                  <span class="hx-tag">重构</span>
+                  <span class="hx-tag dim">撤销 / 重做</span>
+                </div>
+                <ul class="hx-list">
+                  <li>连续三轮「收敛」批次：消重复代码、属性面板统一。</li>
+                  <li><b>撤销 / 重做</b>（快照式）落地；贴图逻辑整体重做。</li>
+                  <li>数据展示与大屏配置改为<b>楼层级存储</b>。</li>
+                  <li>脏数据防线：保存时前端自上而下重建整个 project，服务端只做校验。</li>
+                  <li>插件体系 <code>backgrounds</code> → <code>styles</code>：背景也变成一种「样式」。</li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="hx-tl-item rv">
+              <div class="hx-tl-mark">
+                <b>Day 4</b>
+                <span>11-02</span>
+              </div>
+              <div class="hx-tl-card">
+                <h3>studio 诞生：从「改代码」到「点界面」</h3>
+                <div class="hx-tags">
+                  <span class="hx-tag">新项目</span>
+                  <span class="hx-tag dim">部件体系</span>
+                  <span class="hx-tag dim">AI 面板</span>
+                </div>
+                <ul class="hx-list">
+                  <li>前端拆成<b>启动页 + 编辑页</b>双页结构（hash 路由），Element Plus 整体改造。</li>
+                  <li>部件面板：模型库 / 大图预览 / 多节点子列表 / 部件锁定 / <b>pivot·axis 旋转体系 + 方向 gizmo</b>（最后收敛到世界坐标）。</li>
+                  <li><b>AI 面板</b>：需求描述 → 前端合成提示词、参考图上传（哈希命名 + 可改名）、18 张四视图卡片做上下文。</li>
+                  <li>多节点 GLB 支持，拆分两种模式（全拆 / 单拆）。</li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="hx-tl-item rv">
+              <div class="hx-tl-mark">
+                <b>Day 5</b>
+                <span>11-03</span>
+              </div>
+              <div class="hx-tl-card">
+                <h3>MCP + 技能：把「人操作界面」换成「AI 操作接口」</h3>
+                <div class="hx-tags">
+                  <span class="hx-tag">转折点</span>
+                  <span class="hx-tag dim">删除内置 AI</span>
+                  <span class="hx-tag dim">第一个技能</span>
+                </div>
+                <ul class="hx-list">
+                  <li><b>删掉 studio 内置的 AI 接口</b>（OpenAI 兼容那套）—— 判断：生成能力不该长在开发台里，应该由外部 Agent 通过 MCP 驱动。</li>
+                  <li><b>MCP 骨架</b>：SSE 传输 + WebSocket 中继（服务端 ↔ 浏览器编辑页），工具集重构为「以插件代码为中心」。</li>
+                  <li>第一个技能 <code>ha3d-plugin-dev</code> 诞生；用它写出第一批插件：门窗、落地灯。</li>
+                  <li>studio 发布改为<b>远程安装</b>（主机地址 + 安装密钥），不再手动拷文件。</li>
+                  <li>home 侧：插件导入 / 安装 + 服务端模块化 + 「自定义」角标。</li>
+                </ul>
+                <p class="hx-note">当天推翻：<b>把「AI 面板」从产品里删掉</b>，改成一个能被任意 Agent 调用的 MCP Server。</p>
+              </div>
+            </li>
+
+            <li class="hx-tl-item rv">
+              <div class="hx-tl-mark">
+                <b>Day 6</b>
+                <span>11-04</span>
+              </div>
+              <div class="hx-tl-card">
+                <h3>双线并进，顺手把展示站也起了</h3>
+                <div class="hx-tags">
+                  <span class="hx-tag">方案 B</span>
+                  <span class="hx-tag dim">2D 编辑体验</span>
+                  <span class="hx-tag dim">建站</span>
+                </div>
+                <ul class="hx-list">
+                  <li>studio：<code>options</code> schema 升级、左下卡片栈、<code>valueType / enumValues</code>、GLB 材质修复工具。</li>
+                  <li><b>方案 B 落地</b> —— <code>styles</code> / <code>fields</code> 一律<b>以项目配置为准</b>，代码里那份不再算数；配置快照漂移提醒 + 多标签页收敛；项目导入 / 导出。</li>
+                  <li>home：户型尺寸按楼层、墙端点拖拽、<b>2D 刻度尺 + 墙长标注</b>、画墙 / 拖端点 Shift 正交。</li>
+                  <li><b>ha3d-site 建站</b>：<code>studio.html</code> 上线「提示词 → 生成 → 预览」区块与真实案例。</li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="hx-tl-item rv">
+              <div class="hx-tl-mark">
+                <b>Day 7</b>
+                <span>11-05</span>
+              </div>
+              <div class="hx-tl-card">
+                <h3>架构收敛：只留一个判定入口</h3>
+                <div class="hx-tags">
+                  <span class="hx-tag">废弃 opening</span>
+                  <span class="hx-tag dim">isOn 顶层化</span>
+                  <span class="hx-tag dim">开源协议</span>
+                </div>
+                <ul class="hx-list">
+                  <li>studio：数据源全面切到<b>引擎内存</b> + <code>respawn</code> 快速重生；配置全量覆盖落盘；「代码基线漂移」取代旧快照。</li>
+                  <li>home：2D / 大屏的「已开启」判定链路收口；<b>门窗并入 <code>device</code>（废弃 <code>opening</code>）</b>。</li>
+                  <li><b>废弃 <code>click.isOn</code>，统一到顶层 <code>isOn(obj, get)</code></b> —— 判定只写一次，标签 / 2D 填充 / 点击方向都读它。</li>
+                  <li><code>studio_sync_config</code> + <code>studio_render</code> 上线；技能改名 <code>ha3d-plugin-studio</code>。</li>
+                  <li>两个项目加 <b>PolyForm Noncommercial 1.0.0</b> 协议。</li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="hx-tl-item rv">
+              <div class="hx-tl-mark">
+                <b>Day 8</b>
+                <span>11-06</span>
+              </div>
+              <div class="hx-tl-card">
+                <h3>体验打磨与工程化收尾</h3>
+                <div class="hx-tags">
+                  <span class="hx-tag">交互细节</span>
+                  <span class="hx-tag dim">配置锁</span>
+                  <span class="hx-tag dim">打包压缩</span>
+                </div>
+                <ul class="hx-list">
+                  <li>交互：2D 状态条左移、<b>「点击动作」下拉（10 组开 / 关服务全局拉平，不按设备类型分）</b>、门窗特判清理（<code>rot</code> 统一为度、几何缺省声明化）、2D 居中按钮。</li>
+                  <li><b>插件 click 支持自定义函数 <code>(obj, api)</code></b>；顺手修掉 <code>HA.callService</code> 把参数全塞 <code>target</code> 的 bug。</li>
+                  <li>studio <b>配置锁</b>（人机互斥）：三版收敛，最终落到「每个控件 <code>:disabled</code>」。</li>
+                  <li>打包工程化：Docker 构建期压缩 js / css / html / json → 改为<b>源目录只读、产物写 <code>dist-min/</code></b>。</li>
+                  <li>技能独立成仓库，按流程图重排流程：<b>锁定 → 配置项同步 → 生成代码 → 验证 → 解锁</b>。</li>
+                </ul>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ================= 决策对照 ================= -->
+      <section id="decisions">
+        <div class="sec">
+          <div class="sec-head rv">
+            <div class="kicker">决策对照</div>
+            <h2>8 个被<em>推翻</em>的设计</h2>
+            <p class="sec-sub">
+              这部分比功能列表更有意思：当时为什么那么做、后来为什么必须改。
+              有些是当天推翻，有些是三天后才发现撑不住。
+            </p>
+          </div>
+
+          <div class="hx-dc-grid">
+            <article class="hx-dc rv">
+              <span class="hx-dc-n">01</span>
+              <div class="hx-row old"><span>当初</span>
+                <p><code>click</code> 里藏 <code>isOn</code> 判定</p>
+              </div>
+              <div class="hx-dc-arr">↓</div>
+              <div class="hx-row new"><span>改成</span>
+                <p>插件顶层 <code>isOn(obj, get)</code> 唯一入口</p>
+              </div>
+              <div class="hx-row why"><span>为什么</span>
+                <p>判定散落在点击配置里，3D 标签 / 2D 填充 / 点击方向各算一遍，迟早不一致，且插件作者根本不知道该信哪个。</p>
+              </div>
+            </article>
+
+            <article class="hx-dc rv" style="--d:.05s">
+              <span class="hx-dc-n">02</span>
+              <div class="hx-row old"><span>当初</span>
+                <p>插件分三类：设备 / 门窗（<code>opening</code>）/ 背景</p>
+              </div>
+              <div class="hx-dc-arr">↓</div>
+              <div class="hx-row new"><span>改成</span>
+                <p>两类：<code>device</code>（含门 / 窗，<code>type</code> 区分）+ <code>background</code></p>
+              </div>
+              <div class="hx-row why"><span>为什么</span>
+                <p>门窗本质就是「贴墙的设备」，独立一类会带出一堆 <code>type==='door'</code> 特判；合并后点击、开关、绑定实体全部走同一套规则。</p>
+              </div>
+            </article>
+
+            <article class="hx-dc rv" style="--d:.1s">
+              <span class="hx-dc-n">03</span>
+              <div class="hx-row old"><span>当初</span>
+                <p><code>styles</code> / <code>fields</code> 以代码里注册的为准</p>
+              </div>
+              <div class="hx-dc-arr">↓</div>
+              <div class="hx-row new"><span>改成</span>
+                <p>以<b>项目配置</b>为准，代码里那份只是「自带初始值」</p>
+              </div>
+              <div class="hx-row why"><span>为什么</span>
+                <p>用户在面板改了配置、代码没跟着变，就会出现「配置改了画面没变」的经典坑 —— 这就是后来定的方案 B。</p>
+              </div>
+            </article>
+
+            <article class="hx-dc rv" style="--d:.15s">
+              <span class="hx-dc-n">04</span>
+              <div class="hx-row old"><span>当初</span>
+                <p>写完代码再同步配置</p>
+              </div>
+              <div class="hx-dc-arr">↓</div>
+              <div class="hx-row new"><span>改成</span>
+                <p><b>先 <code>sync_config</code> 覆盖配置，再按新配置写代码</b></p>
+              </div>
+              <div class="hx-row why"><span>为什么</span>
+                <p>引擎渲染时配置会覆盖代码声明，顺序反了等于在错误的基线上验证，结论全都不可信。</p>
+              </div>
+            </article>
+
+            <article class="hx-dc rv" style="--d:.2s">
+              <span class="hx-dc-n">05</span>
+              <div class="hx-row old"><span>当初</span>
+                <p>配置锁状态存在服务端，接口拦截 AI 写入</p>
+              </div>
+              <div class="hx-dc-arr">↓</div>
+              <div class="hx-row new"><span>改成</span>
+                <p>纯前端状态 → 最终<b>每个控件 <code>:disabled</code></b>，刷新即解锁</p>
+              </div>
+              <div class="hx-row why"><span>为什么</span>
+                <p>服务端存锁会让刷新后「锁死解不开」；事件拦截又太重。锁只要防住「当前页面的人手改」，控件级禁用最直白。</p>
+              </div>
+            </article>
+
+            <article class="hx-dc rv" style="--d:.25s">
+              <span class="hx-dc-n">06</span>
+              <div class="hx-row old"><span>当初</span>
+                <p>Docker 构建时原地压缩 <code>public/</code>、<code>assets/</code></p>
+              </div>
+              <div class="hx-dc-arr">↓</div>
+              <div class="hx-row new"><span>改成</span>
+                <p>读源目录 → 写独立的 <code>dist-min/</code>，源文件一个字节不动</p>
+              </div>
+              <div class="hx-row why"><span>为什么</span>
+                <p>本地压过一次之后，源码就变成不可读的压缩产物，后面根本没法改（home 尤其致命）。</p>
+              </div>
+            </article>
+
+            <article class="hx-dc rv" style="--d:.3s">
+              <span class="hx-dc-n">07</span>
+              <div class="hx-row old"><span>当初</span>
+                <p>studio 内置 AI 生成接口（OpenAI 兼容）</p>
+              </div>
+              <div class="hx-dc-arr">↓</div>
+              <div class="hx-row new"><span>改成</span>
+                <p>外部 Agent + MCP，开发台只提供<b>可被调用的能力</b></p>
+              </div>
+              <div class="hx-row why"><span>为什么</span>
+                <p>生成能力属于 Agent，不属于开发台。拆开之后，模型随便换，工具集反而越做越实（现在 30 个）。</p>
+              </div>
+            </article>
+
+            <article class="hx-dc rv" style="--d:.35s">
+              <span class="hx-dc-n">08</span>
+              <div class="hx-row old"><span>当初</span>
+                <p>技能包放在 <code>studio/skill/</code> 里一起维护</p>
+              </div>
+              <div class="hx-dc-arr">↓</div>
+              <div class="hx-row new"><span>改成</span>
+                <p>独立仓库 <code>ha3d-skill</code> + 安装说明</p>
+              </div>
+              <div class="hx-row why"><span>为什么</span>
+                <p>技能的迭代节奏比 studio 快得多，混在一个仓库里必然版本分叉；拆开后还能单独 clone 装进任意 WorkBuddy。</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 三阶段 ================= -->
+      <section id="phases">
+        <div class="sec">
+          <div class="sec-head rv">
+            <div class="kicker">架构演进</div>
+            <h2>三个阶段，<em>三次换挡</em></h2>
+            <p class="sec-sub">
+              每一阶段解决的都是上一阶段暴露出来的问题：能看见 → 能造 → 能教 AI 自己造。
+            </p>
+          </div>
+
+          <div class="hx-phases">
+            <article class="hx-phase rv">
+              <div class="hx-phase-k">阶段一 · Day 1-3</div>
+              <h3>单机可视化</h3>
+              <p>浏览器直连 HA WebSocket，零依赖 Node 只做静态托管与持久化。核心是「2D 户型 → 3D 渲染 → 大屏展示」，设备与背景全部插件化。</p>
+              <div class="hx-flow">
+                <span>2D 户型</span><i>→</i><span>3D 全屋</span><i>→</i><span>大屏控制</span>
+              </div>
+            </article>
+
+            <article class="hx-phase rv" style="--d:.08s">
+              <div class="hx-phase-k">阶段二 · Day 4-6</div>
+              <h3>开发台 + MCP</h3>
+              <p>人点界面造插件：装配 GLB、绑实体、实时预览、导出/远程安装回 home。MCP Server 通过 SSE + WS 中继把浏览器编辑页变成 AI 可操作的接口。</p>
+              <div class="hx-flow">
+                <span>studio 界面</span><i>→</i><span>MCP Server</span><i>→</i><span>AI 调用</span>
+              </div>
+            </article>
+
+            <article class="hx-phase rv" style="--d:.16s">
+              <div class="hx-phase-k">阶段三 · Day 5 末-8</div>
+              <h3>技能化全流程</h3>
+              <p>一句话需求交给 WorkBuddy + 技能包：锁配置 → 拉配置与代码 → 配置项同步 → 生成代码 → 构造实体状态验证 → 解锁汇报。人只负责定方向与验收。</p>
+              <div class="hx-flow">
+                <span>一句话需求</span><i>→</i><span>技能流程</span><i>→</i><span>插件包</span>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 数据看板 ================= -->
+      <section id="numbers">
+        <div class="sec">
+          <div class="sec-head rv">
+            <div class="kicker">数据看板</div>
+            <h2>8 天里<em>能数出来的东西</em></h2>
+            <p class="sec-sub">全部来自仓库实测（代码行数、工具注册数、构建体积），不做估算。</p>
+          </div>
+
+          <div class="hx-nums">
+            <div class="hx-num rv"><b data-count="30">30</b><span>个 MCP 工具</span><em>起步 25 → 现在 30</em></div>
+            <div class="hx-num rv" style="--d:.05s"><b data-count="20">20</b><span>个插件（内置 + 自定义）</span><em>12 设备 + 2 背景 + 6 自定义</em></div>
+            <div class="hx-num rv" style="--d:.1s"><b data-count="40">40</b><span>次 git 提交</span><em>home 19 / studio 18 / site+skill 3</em></div>
+            <div class="hx-num rv" style="--d:.15s"><b data-count="56">56</b><span>% 静态资源压缩收益</span><em>671.7KB → 294.6KB</em></div>
+          </div>
+
+          <div class="hx-board">
+            <div class="hx-board-card rv">
+              <h3>构建期压缩收益</h3>
+              <div class="hx-board-sub">home · Docker 构建阶段跑一次，产物写 dist-min/</div>
+
+              <div class="hx-bar">
+                <div class="hx-bar-head"><b>public + assets（文本资源）</b><em>-56.1%</em></div>
+                <div class="hx-bar-row"><span>压缩前</span><i style="--w:100%"></i><em>671.7 KB</em></div>
+                <div class="hx-bar-row"><span>压缩后</span><i class="ok" style="--w:43.9%"></i><em>294.6 KB</em></div>
+              </div>
+
+              <div class="hx-bar">
+                <div class="hx-bar-head"><b>studio 前端（Vite 构建）</b><em>已压缩</em></div>
+                <div class="hx-bar-row"><span>JS</span><i style="--w:100%"></i><em>2.4 MB</em></div>
+                <div class="hx-bar-row"><span>CSS</span><i class="ok" style="--w:16%"></i><em>393 KB</em></div>
+              </div>
+            </div>
+
+            <div class="hx-board-card rv" style="--d:.06s">
+              <h3>代码规模</h3>
+              <div class="hx-board-sub">手写代码，不含依赖与构建产物</div>
+              <ul class="hx-size">
+                <li><span><b>ha-3d-home</b><small>前端 9 个模块 / 服务端 4 个文件</small></span><b>6416 行</b></li>
+                <li><span><b>ha3d-plugin-studio</b><small>server + client（14 个 Vue 组件）</small></span><b>10271 行</b></li>
+                <li><span><b>ha3d-skill</b><small>SKILL.md + references + 脚本</small></span><b>32.6 KB</b></li>
+                <li><span><b>ha3d-site</b><small>index / studio / history 三个页面</small></span><b>3 页静态</b></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="hx-end rv" style="margin-top:26px">
+            <div>
+              <h3>下一步：把你的家，也变成一块能点的沙盘</h3>
+              <p>零 npm 依赖、单容器部署，接上 Home Assistant 就能用；想造插件，还有图形化工作台和 AI 技能包。</p>
+            </div>
+            <div class="cta-row" style="margin:0">
+              <a class="btn primary" href="index.html#deploy">看怎么部署 <span class="ar">→</span></a>
+              <a class="btn" href="studio.html">打开插件工作台</a>
+              <a class="btn" href="https://gitee.com/sunhuip/ha3d-skill" target="_blank" rel="noopener">技能包仓库</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ================= 页脚 ================= -->
+    <footer>
+      <div class="foot-in">
+        <div>
+          <div class="foot-brand">
+            <span class="roof">📜</span>
+            <b style="font-size:16px">开发历程</b>
+            <span class="muted" style="font-size:12px">· HA 3D Home 生态的 8 天</span>
+          </div>
+          <div class="foot-note">
+            内容来自 8 天开发日志（2403 行）与四个仓库的实测数据：
+            <a href="index.html">HA 3D Home</a> · <a href="studio.html">插件工作台</a> · ha3d-skill · 本站。
+          </div>
+          <div class="foot-meta">纯静态页面 · 无构建 · 与 HA 3D Home 官网同款风格</div>
+        </div>
+        <div class="foot-links">
+          <a href="#projects">四个项目</a>
+          <a href="#timeline">时间线</a>
+          <a href="#decisions">决策对照</a>
+          <a href="#phases">架构演进</a>
+          <a href="#numbers">数据看板</a>
+          <a href="index.html">HA 3D Home</a>
+          <a href="studio.html">插件工作台</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+  <script src="js/main.js?v=20261118"></script>
+</body>
+
+</html>
